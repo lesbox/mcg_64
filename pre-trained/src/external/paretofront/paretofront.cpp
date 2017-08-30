@@ -24,8 +24,8 @@ void mexFunction( int nlhs, mxArray *plhs[] , int nrhs, const mxArray *prhs[] )
 {
 	bool * front;
 	double * M;
-	unsigned int row, col;
-	const int  *dims;
+	size_t row, col;
+	const size_t  *dims;
     
 	if(nrhs == 0 || nlhs > 1)
 	{
@@ -35,7 +35,7 @@ void mexFunction( int nlhs, mxArray *plhs[] , int nrhs, const mxArray *prhs[] )
 	}
 	
 	M = mxGetPr(prhs[0]);
-	dims = mxGetDimensions(prhs[0]);
+	dims = (const size_t*)mxGetDimensions(prhs[0]);
 	row = dims[0];
 	col = dims[1];
 	
@@ -48,7 +48,7 @@ void mexFunction( int nlhs, mxArray *plhs[] , int nrhs, const mxArray *prhs[] )
 	
 	
 	/* main call */
-	paretofront(front,  M, row, col);
+	paretofront(front,  M, (unsigned int)row, (unsigned int)col);
 }
 
 void paretofront(bool * front, double * M, unsigned int row, unsigned int col)

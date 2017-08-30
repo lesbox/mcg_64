@@ -29,7 +29,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
         		  int nrhs, const mxArray*prhs[] )
 {  
     int num_dims = mxGetNumberOfDimensions(PARTS);
-    const int* in_dims = mxGetDimensions(PARTS);
+    const size_t* in_dims = mxGetDimensions(PARTS);
     
     std::size_t num_parts;
     if (num_dims==3)
@@ -178,9 +178,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
     }
     
     /* Store the LUT as a cell */
-    int dims_out[1]; 
+    size_t dims_out[1]; 
     dims_out[0] = num_regions;
-    LUT = mxCreateCellArray(1, dims_out);
+    LUT = mxCreateCellArray(1, (const mwSize*)dims_out);
     
     for(std::map<int, vector_type>::const_iterator it=ilabel_lut.begin(); it!=ilabel_lut.end(); ++it)
     {

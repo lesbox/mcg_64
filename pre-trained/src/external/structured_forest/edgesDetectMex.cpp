@@ -16,7 +16,7 @@ typedef unsigned short uint16;
 #define min(x,y) ((x) < (y) ? (x) : (y))
 
 // construct lookup array for mapping fids to channel indices
-uint32* buildLookup( int *dims, int w ) {
+uint32* buildLookup( const size_t *dims, int w ) {
   int c, r, z, n=w*w*dims[2]; uint32 *cids=new uint32[n]; n=0;
   for(z=0; z<dims[2]; z++) for(c=0; c<w; c++) for(r=0; r<w; r++)
     cids[n++] = z*dims[0]*dims[1] + c*dims[0] + r;
@@ -24,7 +24,7 @@ uint32* buildLookup( int *dims, int w ) {
 }
 
 // construct lookup arrays for mapping fids for self-similarity channel
-void buildLookupSs( uint32 *&cids1, uint32 *&cids2, int *dims, int w, int m ) {
+void buildLookupSs( uint32 *&cids1, uint32 *&cids2, const size_t *dims, int w, int m ) {
   int i, j, z, z1, c, r; int locs[1024];
   int m2=m*m, n=m2*(m2-1)/2*dims[2], s=int(w/m/2.0+.5);
   cids1 = new uint32[n]; cids2 = new uint32[n]; n=0;
@@ -73,20 +73,20 @@ void mexFunction( int nl, mxArray *pl[], int nr, const mxArray *pr[] )
   const int w1 = (int) ceil(double(w-imWidth)/stride);
   const int h2 = h1*stride+gtWidth;
   const int w2 = w1*stride+gtWidth;
-  const int chnDims[3] = {h/shrink,w/shrink,nChns};
-  const int indDims[3] = {h1,w1,nTreesEval};
-  const int outDims[3] = {h2,w2,nEdgeBins};
+  const size_t chnDims[3] = {h/shrink,w/shrink,nChns};
+  const size_t indDims[3] = {h1,w1,nTreesEval};
+  const size_t outDims[3] = {h2,w2,nEdgeBins};
 
   // construct lookup tables
   uint32 *eids, *cids, *cids1, *cids2;
-  eids = buildLookup( (int*)outDims, gtWidth );
-  cids = buildLookup( (int*)chnDims, imWidth/shrink );
-  buildLookupSs( cids1, cids2, (int*)chnDims, imWidth/shrink, nCells );
+  eids = buildLookup( outDims, gtWidth );
+  cids = buildLookup( chnDims, imWidth/shrink );
+  buildLookupSs( cids1, cids2, chnDims, imWidth/shrink, nCells );
 
   // create outputs
-  pl[0] = mxCreateNumericArray(3,outDims,mxSINGLE_CLASS,mxREAL);
+  pl[0] = mxCreateNumericArray(3,(const mwSize*)outDims,mxSINGLE_CLASS,mxREAL);
   float *E = (float*) mxGetData(pl[0]);
-  pl[1] = mxCreateNumericArray(3,indDims,mxUINT32_CLASS,mxREAL);
+  pl[1] = mxCreateNumericArray(3,(const mwSize*)indDims,mxUINT32_CLASS,mxREAL);
   uint32 *ind = (uint32*) mxGetData(pl[1]);
 
   // apply forest to all patches and store leaf inds

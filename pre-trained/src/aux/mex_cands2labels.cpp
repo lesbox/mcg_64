@@ -84,9 +84,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
     }
     
     /* Store labels as a cell */
-    int dims_out[1]; 
+    size_t dims_out[1]; 
     dims_out[0] = n_cands;
-    plhs[0] = mxCreateCellArray(1, dims_out);
+    plhs[0] = mxCreateCellArray(1, (const mwSize*)dims_out);
     
     for (size_t ii=0; ii<n_cands; ++ii)
     {

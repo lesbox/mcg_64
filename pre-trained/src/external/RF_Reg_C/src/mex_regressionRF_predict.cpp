@@ -87,7 +87,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     int keepPred=(int)*((double*)mxGetData(prhs[10]));
 	double* allPred;
     
-    int dims_ntest[2];
+    size_t dims_ntest[2];
     int ntest = n_size;
     int ndim = 2;
     
@@ -96,12 +96,12 @@ void mexFunction( int nlhs, mxArray *plhs[],
     if (keepPred) {
         dims_ntest[0]=ntest;
         dims_ntest[1]=ntree;
-        plhs[1] = mxCreateNumericArray(ndim, dims_ntest, mxDOUBLE_CLASS, mxREAL);
+        plhs[1] = mxCreateNumericArray(ndim, (const mwSize*)dims_ntest, mxDOUBLE_CLASS, mxREAL);
         allPred = (double*)mxGetPr(plhs[1]);
     } else {
         dims_ntest[0]=ntest;
         dims_ntest[1]=1;
-        plhs[1] = mxCreateNumericArray(ndim, dims_ntest, mxDOUBLE_CLASS, mxREAL);
+        plhs[1] = mxCreateNumericArray(ndim, (const mwSize*)dims_ntest, mxDOUBLE_CLASS, mxREAL);
         allPred = (double*)mxGetPr(plhs[1]);
     }
     
@@ -114,13 +114,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
     if (nodes) {
         dims_ntest[0] = ntest;
         dims_ntest[1] = ntree;
-        plhs[2] = mxCreateNumericArray(ndim, dims_ntest, mxINT32_CLASS, mxREAL);
+        plhs[2] = mxCreateNumericArray(ndim, (const mwSize*)dims_ntest, mxINT32_CLASS, mxREAL);
         nodex = (int*)mxGetData(plhs[2]);
         //nodexts = (int*)mxCalloc(ntest*ntree,sizeof(int));
     } else {
         dims_ntest[0] = ntest;
         dims_ntest[1] = 1;
-        plhs[2] = mxCreateNumericArray(ndim, dims_ntest, mxINT32_CLASS, mxREAL);
+        plhs[2] = mxCreateNumericArray(ndim, (const mwSize*)dims_ntest, mxINT32_CLASS, mxREAL);
         nodex = (int*)mxGetData(plhs[2]);
         //nodexts = (int*)mxCalloc(ntest,sizeof(int));
     }
